@@ -6,13 +6,11 @@ import io
 
 app = FastAPI()
 
-# ===== CORS: cho phép web GitHub Pages gọi sang =====
+# ===== CORS: CHỈ CHO PHÉP WEB GITHUB PAGES CỦA ANH =====
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://hungtm9695b-a11y.github.io",  # web chính của anh
-        "https://hungtm9695b-a11y.github.io/", 
-        "*",  # cho phép mọi origin (demo, có thể bỏ * nếu muốn chặt chẽ)
+        "https://hungtm9695b-a11y.github.io",
     ],
     allow_credentials=True,
     allow_methods=["*"],
