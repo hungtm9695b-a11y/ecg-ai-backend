@@ -6,10 +6,14 @@ import io
 
 app = FastAPI()
 
-# Cho phép web (GitHub Pages) truy cập API này
+# ===== CORS: cho phép web GitHub Pages gọi sang =====
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # sau này có thể sửa lại chỉ cho phép domain của anh
+    allow_origins=[
+        "https://hungtm9695b-a11y.github.io",  # web chính của anh
+        "https://hungtm9695b-a11y.github.io/", 
+        "*",  # cho phép mọi origin (demo, có thể bỏ * nếu muốn chặt chẽ)
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,18 +35,15 @@ def dummy_ecg_ai(image: Image.Image) -> EcgResult:
     ischemia = False
     dangerous_arrhythmia = False
 
-    # Ở bản thật: tại đây sẽ gọi model deep learning để:
-    # - nhận diện ST chênh
-    # - T đảo
-    # - Q bệnh lý
-    # - rối loạn nhịp...
-    # Bản demo chỉ mô tả kích thước ảnh.
-    summary = f"Ảnh ECG được AI tiếp nhận với kích thước {width}x{height}px. (Mô hình AI thật sẽ đưa nhận định chi tiết tại đây)."
+    summary = (
+        f"Ảnh ECG được AI tiếp nhận với kích thước {width}x{height}px. "
+        "(Mô hình AI thật sẽ đưa nhận định chi tiết tại đây)."
+    )
 
     return EcgResult(
         ischemia=ischemia,
         dangerous_arrhythmia=dangerous_arrhythmia,
-        summary=summary
+        summary=summary,
     )
 
 @app.post("/api/ecg-analyze")
@@ -59,9 +60,9 @@ async def ecg_analyze(file: UploadFile = File(...)):
     result = dummy_ecg_ai(image)
 
     return {
-      "ischemia": result.ischemia,
-      "dangerous_arrhythmia": result.dangerous_arrhythmia,
-      "summary": result.summary,
+        "ischemia": result.ischemia,
+        "dangerous_arrhythmia": result.dangerous_arrhythmia,
+        "summary": result.summary,
     }
 
 @app.get("/")
