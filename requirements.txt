@@ -1,4 +1,5 @@
 fastapi
-uvicorn
-pillow
+uvicorn[standard]
 python-multipart
+openai>=1.0.0
+pillow
