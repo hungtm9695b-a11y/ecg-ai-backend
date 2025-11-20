@@ -6,7 +6,7 @@ import io
 
 app = FastAPI()
 
-# ===== CORS: CHỈ CHO PHÉP WEB GITHUB PAGES CỦA ANH =====
+# ===== CORS CHUẨN =====
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -23,19 +23,14 @@ class EcgResult(BaseModel):
     summary: str
 
 def dummy_ecg_ai(image: Image.Image) -> EcgResult:
-    """
-    HÀM GIẢ LẬP (DEMO):
-    Sau này sẽ được thay bằng mô hình AI thật (deep learning).
-    Tạm thời chỉ trả về summary đơn giản.
-    """
     width, height = image.size
 
     ischemia = False
     dangerous_arrhythmia = False
 
     summary = (
-        f"Ảnh ECG được AI tiếp nhận với kích thước {width}x{height}px. "
-        "(Mô hình AI thật sẽ đưa nhận định chi tiết tại đây)."
+        f"Ảnh ECG (demo) kích thước {width}x{height}px. "
+        "Mô hình AI thật sẽ phân tích khi tích hợp."
     )
 
     return EcgResult(
@@ -46,12 +41,6 @@ def dummy_ecg_ai(image: Image.Image) -> EcgResult:
 
 @app.post("/api/ecg-analyze")
 async def ecg_analyze(file: UploadFile = File(...)):
-    """
-    Endpoint chính: nhận 1 file ảnh ECG, trả về:
-    - ischemia: có gợi ý thiếu máu cơ tim không
-    - dangerous_arrhythmia: có gợi ý rối loạn nhịp nguy hiểm không
-    - summary: text tóm tắt để hiển thị trên web
-    """
     content = await file.read()
     image = Image.open(io.BytesIO(content)).convert("RGB")
 
